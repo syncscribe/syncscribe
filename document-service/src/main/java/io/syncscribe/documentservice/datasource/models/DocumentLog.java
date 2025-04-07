@@ -23,4 +23,5 @@ public class DocumentLog {
     private Document document;
     private String content;
     private OffsetDateTime createdAt;
+    private String updatedBy;
 }

@@ -5,5 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DocumentLogRepository extends JpaRepository<DocumentLog, String> {
+
+    void deleteAllByDocumentId(String id);
     
 }
