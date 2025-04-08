@@ -1,6 +1,5 @@
 package io.syncscribe.documentservice.datasource.models;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 import jakarta.persistence.Id;

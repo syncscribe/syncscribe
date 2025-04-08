@@ -16,7 +16,6 @@ import io.syncscribe.documentservice.components.documents.DocumentService;
 import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
 import io.syncscribe.documentservice.contracts.GetDocumentResponse;
 import io.syncscribe.documentservice.contracts.ShareDocumentRequest;
-import io.syncscribe.documentservice.contracts.UnShareDocumentRequest;
 import io.syncscribe.documentservice.contracts.WriteDocumentRequest;
 
 @RestController
