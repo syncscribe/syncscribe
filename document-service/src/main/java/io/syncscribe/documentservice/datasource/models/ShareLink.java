@@ -1,14 +1,15 @@
 package io.syncscribe.documentservice.datasource.models;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.syncscribe.common.jpa.StringListConverter;
-import io.syncscribe.common.utils.NanoIdGenerator;
+import io.syncscribe.documentservice.contracts.DocumentVisitor;
+import io.syncscribe.documentservice.datasource.converters.DocumentVisitorStringListConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -26,33 +27,26 @@ public class ShareLink {
     @ManyToOne
     @JoinColumn(name = "document_id")
     private Document document;
-    private Boolean isPublic;
-    @Convert(converter = StringListConverter.class)
-    private List<String> emails;
+    @Enumerated(EnumType.STRING)
+    private ShareLinkRole generalRole;
+    @Convert(converter = DocumentVisitorStringListConverter.class)
+    private List<DocumentVisitor> visitors;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
-    public static ShareLink newShareLink(Document document, Boolean isPublic, List<String> emails) {
-        var shareLink = new ShareLink();
-        shareLink.setId(NanoIdGenerator.generate());
-        shareLink.setDocument(document);
-        shareLink.setIsPublic(isPublic);
-        shareLink.setEmails(emails);
-        shareLink.setCreatedAt(OffsetDateTime.now());
-        return shareLink;
-    }
-
-    public void addSharee(String email) {
-        if (emails == null) {
-            emails = new ArrayList<>();
+    public void addVisitor(String email, ShareLinkRole role) {
+        if (visitors == null) {
+            visitors = new ArrayList<>();
         }
-        emails.add(email);
+        visitors.add(new DocumentVisitor(email, role));
+        updatedAt = OffsetDateTime.now();
     }
 
-    public void removeSharee(String email) {
-        if (emails == null) {
+    public void removeVisitor(String email) {
+        if (visitors == null) {
             return;
         }
-        emails.remove(email);
+        visitors.removeIf(visitor -> visitor.email().equals(email));
+        updatedAt = OffsetDateTime.now();
     }
 }

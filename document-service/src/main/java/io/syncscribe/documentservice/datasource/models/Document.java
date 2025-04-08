@@ -1,14 +1,16 @@
 package io.syncscribe.documentservice.datasource.models;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.syncscribe.common.auth.OAuthContext;
 import io.syncscribe.common.utils.NanoIdGenerator;
+import io.syncscribe.documentservice.contracts.DocumentVisitor;
+import io.syncscribe.documentservice.contracts.IllegalActionException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +29,8 @@ public class Document {
     private String ownerId;
     @OneToMany(mappedBy = "document")
     private List<DocumentLog> documentLogs;
-    @OneToMany(mappedBy = "document")
-    private List<ShareLink> shareLinks;
+    @OneToOne(mappedBy = "document")
+    private ShareLink shareLink;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
     private String updatedBy;
@@ -51,13 +53,18 @@ public class Document {
         return documentLog;
     }
 
-    public ShareLink createShareLink(List<String> emails, Boolean isPublic) {
+    public ShareLink createShareLink(List<DocumentVisitor> visitors, ShareLinkRole generalRole) {
+        var user = OAuthContext.getUser();
+        if (!user.id().equals(this.ownerId)) {
+            throw new IllegalActionException("You are not the owner of this document");
+        }
         var shareLink = new ShareLink();
         shareLink.setId(NanoIdGenerator.generate());
         shareLink.setDocument(this);
-        shareLink.setEmails(emails);
-        shareLink.setIsPublic(isPublic);
+        shareLink.setGeneralRole(generalRole);
+        shareLink.setVisitors(visitors);
         shareLink.setCreatedAt(OffsetDateTime.now());
         return shareLink;
     }
+
 }

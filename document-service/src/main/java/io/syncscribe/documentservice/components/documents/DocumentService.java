@@ -10,13 +10,12 @@ import io.syncscribe.common.auth.OAuthContext;
 import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
 import io.syncscribe.documentservice.contracts.IllegalActionException;
 import io.syncscribe.documentservice.contracts.ShareDocumentRequest;
-import io.syncscribe.documentservice.contracts.UnShareDocumentRequest;
 import io.syncscribe.documentservice.contracts.WriteDocumentRequest;
 import io.syncscribe.documentservice.datasource.models.Document;
 import io.syncscribe.documentservice.datasource.models.DocumentLogRepository;
 import io.syncscribe.documentservice.datasource.models.DocumentRepository;
-import io.syncscribe.documentservice.datasource.models.ShareLink;
 import io.syncscribe.documentservice.datasource.models.ShareLinkRepository;
+import io.syncscribe.documentservice.datasource.models.ShareLinkRole;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -41,6 +40,16 @@ public class DocumentService {
     @Transactional
     public void writeDocument(String id, WriteDocumentRequest request) {
         var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
+        var user = OAuthContext.getUser();
+        if (!doc.getOwnerId().equals(user.id())) {
+            var shareLink = shareLinkRepository.findByDocumentId(id)
+                    .orElseThrow(() -> new IllegalActionException("You are not allowed to modify this document"));
+            if (shareLink.getGeneralRole() == ShareLinkRole.READ
+                    || !shareLink.getVisitors().stream().anyMatch(v -> v.email().equals(user.email()))) {
+                throw new IllegalActionException("You are not allowed to modify this document");
+            }
+        }
+
         doc.setContent(request.content());
         doc.setUpdatedAt(OffsetDateTime.now());
         doc.setUpdatedBy(OAuthContext.getUser().id());
@@ -70,7 +79,7 @@ public class DocumentService {
         }
         var shareLink = shareLinkRepository.findByDocumentId(id)
                 .orElseThrow(() -> new RuntimeException("You are not allowed to access this document"));
-        if (shareLink.getIsPublic() || shareLink.getEmails().contains(user.email())) {
+        if (shareLink.getVisitors().stream().anyMatch(v -> v.email().equals(user.email()))) {
             return doc;
         }
         throw new RuntimeException("You are not allowed to access this document");
@@ -81,19 +90,12 @@ public class DocumentService {
         return pageResult.getContent();
     }
 
-    public void shareDocument(String id, ShareDocumentRequest request) {
-        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
-        var userId = OAuthContext.getUser().id();
-        if (!doc.getOwnerId().equals(userId)) {
-            throw new IllegalActionException("You are not the owner of this document");
-        }
-
-        var shareLink = ShareLink.newShareLink(doc, request.isPublic(), request.emails());
+    public void shareDocument(String docId, ShareDocumentRequest request) {
+        var doc = documentRepository.findById(docId).orElseThrow(() -> new RuntimeException("Document not found"));
+        var shareLink = shareLinkRepository.findByDocumentId(docId)
+                .orElse(doc.createShareLink(request.visitors(), request.generalRole()));
+        shareLink.setGeneralRole(request.generalRole());
+        shareLink.setVisitors(request.visitors());
         shareLinkRepository.save(shareLink);
-    }
-
-    public void unshareDocument(String id, UnShareDocumentRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'unshareDocument'");
     }
 }

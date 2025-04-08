@@ -36,8 +36,6 @@ public class DocumentEndpoint {
                 .collect(Collectors.toList());
     }
 
-
-
     @PostMapping
     public String createDocument(CreateDocumentRequest request) {
         request.validate();
@@ -46,15 +44,8 @@ public class DocumentEndpoint {
 
     @PostMapping("/{id}/share")
     public void shareDocument(@PathVariable String id, ShareDocumentRequest request) {
-        request.validate();
         documentService.shareDocument(id, request);
     }   
-
-    @PostMapping("/{id}/unshare")
-    public void unshareDocument(@PathVariable String id, UnShareDocumentRequest request) {
-        request.validate();
-        documentService.unshareDocument(id, request);
-    }
 
     @PutMapping("/{id}")
     public void write(@PathVariable String id, WriteDocumentRequest request) {
