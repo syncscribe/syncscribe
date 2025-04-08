@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/users
+    url: jdbc:postgresql://localhost:5432/documents
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
-      open-in-view: false
+    open-in-view: false
   security:
     oauth2:
       resourceserver:
@@ -15,4 +15,4 @@ spring:
           issuer: http://localhost:8080/realms/syncscribe
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer}/protocol/openid-connect/certs
 server:
-  port: 8000
+  port: 8001

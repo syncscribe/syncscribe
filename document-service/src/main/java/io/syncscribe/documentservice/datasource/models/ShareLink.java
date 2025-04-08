@@ -10,6 +10,7 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -23,6 +24,7 @@ import lombok.ToString;
 @Table(name = "share_links")
 @Entity
 public class ShareLink {
+    @Id
     private String id;
     @ManyToOne
     @JoinColumn(name = "document_id")
