@@ -25,12 +25,13 @@ public class Document {
     @Id
     private String id;
     private String name;
-    private String content;
     private String ownerId;
+    private String url;
     @OneToMany(mappedBy = "document")
     private List<DocumentLog> documentLogs;
     @OneToOne(mappedBy = "document")
     private ShareLink shareLink;
+    private Boolean markForDelete;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
     private String updatedBy;
@@ -46,9 +47,9 @@ public class Document {
 
     public DocumentLog createDocumentLog() {
         var documentLog = new DocumentLog();
+        documentLog.setId(NanoIdGenerator.generate());
         documentLog.setDocument(this);
         documentLog.setCreatedAt(OffsetDateTime.now());
-        documentLog.setContent(this.content);
         documentLog.setUpdatedBy(this.updatedBy);
         return documentLog;
     }

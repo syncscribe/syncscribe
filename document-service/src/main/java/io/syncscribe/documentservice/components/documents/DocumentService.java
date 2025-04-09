@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import io.syncscribe.common.auth.OAuthContext;
+import io.syncscribe.documentservice.components.storage.StorageService;
 import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
 import io.syncscribe.documentservice.contracts.IllegalActionException;
 import io.syncscribe.documentservice.contracts.ShareDocumentRequest;
@@ -23,22 +24,26 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     private final DocumentLogRepository documentLogRepository;
     private final ShareLinkRepository shareLinkRepository;
+    private final StorageService storageService;
 
-    public DocumentService(DocumentRepository documentRepository, DocumentLogRepository documentLogRepository,
-            ShareLinkRepository shareLinkRepository) {
+    public DocumentService(
+            DocumentRepository documentRepository, DocumentLogRepository documentLogRepository,
+            ShareLinkRepository shareLinkRepository, StorageService storageService) {
         this.documentRepository = documentRepository;
         this.documentLogRepository = documentLogRepository;
         this.shareLinkRepository = shareLinkRepository;
+        this.storageService = storageService;
     }
 
-    public String createDocument(CreateDocumentRequest request) {
+    public String createDocument(CreateDocumentRequest request) throws Exception {
         var doc = Document.newDocument(request.name());
         documentRepository.save(doc);
+        storageService.createDocument(doc);
         return doc.getId();
     }
 
     @Transactional
-    public void writeDocument(String id, WriteDocumentRequest request) {
+    public String writeDocument(String id, WriteDocumentRequest request) throws Exception {
         var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
         var user = OAuthContext.getUser();
         if (!doc.getOwnerId().equals(user.id())) {
@@ -49,26 +54,29 @@ public class DocumentService {
                 throw new IllegalActionException("You are not allowed to modify this document");
             }
         }
-
-        doc.setContent(request.content());
         doc.setUpdatedAt(OffsetDateTime.now());
         doc.setUpdatedBy(OAuthContext.getUser().id());
+        var url = storageService.updateDocument(doc, request.content());
+        doc.setUrl(url);
         documentRepository.save(doc);
 
         var log = doc.createDocumentLog();
+        var logUrl = storageService.logDocument(log, request.content());
+        log.setUrl(logUrl);
         documentLogRepository.save(log);
+
+        return url;
     }
 
     @Transactional
-    public void deleteDocument(String id) {
+    public void softDeleteDocument(String id) {
         var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
         var userId = OAuthContext.getUser().id();
         if (!doc.getOwnerId().equals(userId)) {
             throw new IllegalActionException("You are not the owner of this document");
         }
-        shareLinkRepository.deleteAllByDocumentId(id);
-        documentLogRepository.deleteAllByDocumentId(id);
-        documentRepository.deleteById(id);
+        doc.setMarkForDelete(true);
+        documentRepository.save(doc);
     }
 
     public Document getDocument(String id) {
@@ -97,5 +105,6 @@ public class DocumentService {
         shareLink.setGeneralRole(request.generalRole());
         shareLink.setVisitors(request.visitors());
         shareLinkRepository.save(shareLink);
+        //TODO send email
     }
 }

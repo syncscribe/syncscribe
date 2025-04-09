@@ -4,25 +4,22 @@ import java.time.OffsetDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
 @Setter
+@Getter
 @ToString
+@Table(name = "document_media")
 @Entity
-@Table(name = "document_logs")
-public class DocumentLog {
+public class StorageObject {
     @Id
     private String id;
-    @ManyToOne
-    @JoinColumn(name = "document_id")
-    private Document document;
+    private String name;
+    private String documentId;
+    private String mimeType;
     private String url;
     private OffsetDateTime createdAt;
-    private String updatedBy;
 }

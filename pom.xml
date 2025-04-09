@@ -12,6 +12,7 @@
         <syncscribe.version>0.0.1-SNAPSHOT</syncscribe.version>
         <spring.oauth2.version>3.4.4</spring.oauth2.version>
         <spring.oauth2.jose.version>6.4.4</spring.oauth2.jose.version>
+        <minio.version>8.5.17</minio.version>
     </properties>
 
     <modules>
