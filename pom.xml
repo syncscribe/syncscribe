@@ -20,7 +20,7 @@
         <module>collaboration-service</module>
         <module>websocket-gateway</module>
         <module>document-service</module>
-        <module>user-service</module>
+        <module>idp-service</module>
     </modules>
 
     <dependencyManagement>
