@@ -1,4 +1,4 @@
-package io.syncscribe.userservice.endpoints;
+package io.syncscribe.idpservice.endpoints;
 
 import java.security.Principal;
 

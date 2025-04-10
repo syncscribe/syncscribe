@@ -1,6 +1,11 @@
+minio:
+  endpoint: http://localhost:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: document
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/documents
+    url: jdbc:postgresql://localhost:5432/document
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

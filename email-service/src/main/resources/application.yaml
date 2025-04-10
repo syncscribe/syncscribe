@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/idp
+    url: jdbc:postgresql://localhost:5432/email
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -8,12 +8,23 @@ spring:
     hibernate:
       ddl-auto: create-drop
     open-in-view: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hoangna1204.dev@gmail.com
+    password: uysc nxuk zqwm ggic
+    sender: support@syncscribe.com
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer: http://localhost:8080/realms/syncscribe
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer}/protocol/openid-connect/certs
+  thymeleaf:
+    cache: true
 server:
   port: 8000
     

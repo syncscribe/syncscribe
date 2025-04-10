@@ -1,4 +1,4 @@
-package io.syncscribe.documentservice.components.security;
+package io.syncscribe.userservice.components.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,6 @@ import io.syncscribe.common.auth.Swagger;
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
-        return Swagger.openAPI("Document Service", "Document Service");
+        return Swagger.openAPI("Email Service", "Email Service");
     }
 }

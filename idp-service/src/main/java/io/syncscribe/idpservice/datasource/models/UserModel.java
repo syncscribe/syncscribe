@@ -1,4 +1,4 @@
-package io.syncscribe.userservice.datasource.models;
+package io.syncscribe.idpservice.datasource.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @Table(name = "users")
 public class UserModel {
     @Id
-    private String guid;
+    private String id;
     private String fullName;
     private String email;
     private String avatarPath;
