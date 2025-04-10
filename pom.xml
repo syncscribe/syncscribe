@@ -23,6 +23,7 @@
         <module>common</module>
         <module>collaboration-service</module>
         <module>websocket-gateway</module>
+        <module>email-service</module>
         <module>document-service</module>
         <module>idp-service</module>
     </modules>

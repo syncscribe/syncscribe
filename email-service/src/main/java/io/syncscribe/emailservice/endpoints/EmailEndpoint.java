@@ -1,12 +1,10 @@
 package io.syncscribe.emailservice.endpoints;
 
-import java.security.Principal;
-
+import io.syncscribe.common.contracts.ShareLinkMailRequest;
+import io.syncscribe.emailservice.components.mailer.MailService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.syncscribe.common.contracts.ShareLinkMailRequest;
 
 @RestController
 @RequestMapping("/api/v1/emails")
