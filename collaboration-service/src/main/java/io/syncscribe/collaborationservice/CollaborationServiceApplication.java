@@ -1,11 +1,11 @@
-package com.example.notify;
+package io.syncscribe.collaborationservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UserServiceApplication {
+public class CollaborationServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
+        SpringApplication.run(CollaborationServiceApplication.class, args);
     }
 }

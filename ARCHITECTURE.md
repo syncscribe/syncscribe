@@ -4,13 +4,14 @@
 title: SyncScribe Architecture
 ---
 flowchart TD
-frontend("Frontend (UI)") --> websocket("Web Socket Gateway")
-frontend --> collaboration("Collaboration Service")
-frontend --> exporter("Export Service")
-websocket --> authelia("Authelia: OAuth Server")
-collaboration --> document("Document Service")
-document --> storage("Storage: S3 / MinIO/ FS")
-exporter --> doctype("docx/pdf/image")
+    frontend("Frontend (UI)") --> gateway("API & WebSocket Gateway")
+    gateway --> oauth("OAuth Server")
+    gateway --> collaboration("Collaboration Service")
+    document --> storage("Storage: S3 / Minio/ FS")
+    document --> email("Email Service")
+    gateway --> document("Document Service")
+    gateway --> exporter("Export Service")
+    exporter --> doctype("docx/pdf/image")
 
 ```
 

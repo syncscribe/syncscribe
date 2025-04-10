@@ -7,7 +7,7 @@
         <artifactId>syncscribe</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>websocket-gateway</artifactId>
+    <artifactId>gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
