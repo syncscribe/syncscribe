@@ -1,26 +1,22 @@
 package io.syncscribe.documentservice.components.documents;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import io.syncscribe.common.auth.OAuthContext;
 import io.syncscribe.documentservice.components.storage.StorageService;
 import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
 import io.syncscribe.documentservice.contracts.IllegalActionException;
 import io.syncscribe.documentservice.contracts.ShareDocumentRequest;
 import io.syncscribe.documentservice.contracts.WriteDocumentRequest;
-import io.syncscribe.documentservice.datasource.models.Document;
-import io.syncscribe.documentservice.datasource.models.DocumentLogRepository;
-import io.syncscribe.documentservice.datasource.models.DocumentRepository;
-import io.syncscribe.documentservice.datasource.models.ShareLinkRepository;
-import io.syncscribe.documentservice.datasource.models.ShareLinkRole;
+import io.syncscribe.documentservice.datasource.models.*;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 public class DocumentService {
+    private static final String DOCUMENT_NOT_FOUND_MSG = "Document not found";
     private final DocumentRepository documentRepository;
     private final DocumentLogRepository documentLogRepository;
     private final ShareLinkRepository shareLinkRepository;
@@ -44,13 +40,13 @@ public class DocumentService {
 
     @Transactional
     public String writeDocument(String id, WriteDocumentRequest request) throws Exception {
-        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
+        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
         var user = OAuthContext.getUser();
         if (!doc.getOwnerId().equals(user.id())) {
             var shareLink = shareLinkRepository.findByDocumentId(id)
                     .orElseThrow(() -> new IllegalActionException("You are not allowed to modify this document"));
             if (shareLink.getGeneralRole() == ShareLinkRole.READ
-                    || !shareLink.getVisitors().stream().anyMatch(v -> v.email().equals(user.email()))) {
+                    || shareLink.getVisitors().stream().noneMatch(v -> v.email().equals(user.email()))) {
                 throw new IllegalActionException("You are not allowed to modify this document");
             }
         }
@@ -70,7 +66,7 @@ public class DocumentService {
 
     @Transactional
     public void softDeleteDocument(String id) {
-        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
+        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
         var userId = OAuthContext.getUser().id();
         if (!doc.getOwnerId().equals(userId)) {
             throw new IllegalActionException("You are not the owner of this document");
@@ -80,7 +76,7 @@ public class DocumentService {
     }
 
     public Document getDocument(String id) {
-        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException("Document not found"));
+        var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
         var user = OAuthContext.getUser();
         if (doc.getOwnerId().equals(user.id())) {
             return doc;
@@ -90,7 +86,7 @@ public class DocumentService {
         if (shareLink.getVisitors().stream().anyMatch(v -> v.email().equals(user.email()))) {
             return doc;
         }
-        throw new RuntimeException("You are not allowed to access this document");
+        throw new IllegalActionException("You are not allowed to access this document");
     }
 
     public List<Document> listDocuments(int page, int size) {
@@ -99,12 +95,11 @@ public class DocumentService {
     }
 
     public void shareDocument(String docId, ShareDocumentRequest request) {
-        var doc = documentRepository.findById(docId).orElseThrow(() -> new RuntimeException("Document not found"));
+        var doc = documentRepository.findById(docId).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
         var shareLink = shareLinkRepository.findByDocumentId(docId)
                 .orElse(doc.createShareLink(request.visitors(), request.generalRole()));
         shareLink.setGeneralRole(request.generalRole());
         shareLink.setVisitors(request.visitors());
         shareLinkRepository.save(shareLink);
-        //TODO send email
     }
 }

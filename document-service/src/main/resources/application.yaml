@@ -4,6 +4,11 @@ minio:
   secretKey: minioadmin
   bucketName: document
 spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          emailService.url: http://localhost:8000
   datasource:
     url: jdbc:postgresql://localhost:5432/document
     username: postgres
