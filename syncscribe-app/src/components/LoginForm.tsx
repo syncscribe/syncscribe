@@ -14,7 +14,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
@@ -45,6 +45,11 @@ export function LoginForm({
               <Button type="submit" className="w-full cursor-pointer">
                 Login
               </Button>
+               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
               <div className={"flex flex-col gap-2"}>
                 <Button variant={"outline"} className="w-full border-red-600 cursor-pointer hover:bg-red-100">
                   Login with Google

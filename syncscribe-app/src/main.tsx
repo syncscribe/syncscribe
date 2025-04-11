@@ -6,6 +6,8 @@ import Login from "@/pages/auth/Login.tsx";
 import DocEditor from "@/pages/DocEditor.tsx";
 import ForgotPassword from "@/pages/auth/ForgotPassword.tsx";
 import Signup from "@/pages/auth/Signup.tsx";
+import { Layout } from './components/Layout';
+import DocView from './pages/DocView';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,7 +16,10 @@ createRoot(document.getElementById('root')!).render(
         <Route path={"/login"} element={<Login/>}></Route>
         <Route path={"/forgotPassword"} element={<ForgotPassword/>}></Route>
         <Route path={"/signup"} element={<Signup/>}></Route>
-        <Route path={"/editor"} element={<DocEditor/>}></Route>
+        <Route path={"/"} element={<Layout/>}>
+          <Route index element={<DocView/>}></Route>
+          <Route path={"/editor"} element={<DocEditor/>}></Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
