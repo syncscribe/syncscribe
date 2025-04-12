@@ -1,4 +1,4 @@
-import {ForgotPasswordForm} from "@/components/ForgotPasswordForm.tsx";
+import {ForgotPasswordForm} from "@/components/auth/ForgotPasswordForm.tsx";
 import {GalleryVerticalEnd} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";

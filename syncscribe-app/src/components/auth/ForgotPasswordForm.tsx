@@ -1,22 +1,22 @@
-import {cn} from "@/lib/utils"
-import {Button} from "@/components/ui/button"
-import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card"
-import {Label} from "@/components/ui/label"
-import {Input} from "@/components/ui/input"
+import {cn} from "@/lib/utils.ts"
+import {Button} from "@/components/ui/button.tsx"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card.tsx"
+import {Label} from "@/components/ui/label.tsx"
+import {Input} from "@/components/ui/input.tsx"
 import {useNavigate} from "react-router-dom";
 
-export function SignupForm({
-                            className,
-                            ...props
-                          }: Readonly<React.ComponentPropsWithoutRef<"div">>) {
+export function ForgotPasswordForm({
+                                     className,
+                                     ...props
+                                   }: Readonly<React.ComponentPropsWithoutRef<"div">>) {
   const navigate = useNavigate();
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Signup</CardTitle>
+          <CardTitle className="text-2xl">Forgot password</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email below to reset your password
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -31,23 +31,19 @@ export function SignupForm({
                   required
                 />
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input id="password" type="password" required/>
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="confirmPassword">Confirm password</Label>
-                </div>
-                <Input id="confirmPassword" type="password" required/>
-              </div>
               <Button type="submit" className="w-full cursor-pointer">
-                Create account
+                Submit
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Button variant={"link"}
+                      className="cursor-pointer p-0"
+                      onClick={() => navigate("/signup")}>
+                Sign up
+              </Button>
+            </div>
+            <div className="text-center text-sm">
               Already have an account?{" "}
               <Button variant={"link"}
                       className="cursor-pointer p-0"

@@ -1,4 +1,4 @@
-import {SignupForm} from "@/components/SignupForm.tsx";
+import {SignupForm} from "@/components/auth/SignupForm.tsx";
 import {GalleryVerticalEnd} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
