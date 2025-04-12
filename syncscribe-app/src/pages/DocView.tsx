@@ -1,7 +1,6 @@
 import {columns, Document, documents} from "@/components/doc/datatable/columns.tsx";
 import {DataTable} from "@/components/doc/datatable/datatable.tsx";
 import {useEffect, useState} from "react";
-import DocViewFilter from "@/components/doc/DocViewFilter.tsx";
 
 async function getData(): Promise<Document[]> {
   return Promise.resolve(documents)
@@ -9,7 +8,6 @@ async function getData(): Promise<Document[]> {
 
 export default function Page() {
   const [data, setData] = useState<Document[]>([]);
-  const [selectedRows, setSelectedRows] = useState<Document[]>([]);
 
   useEffect(() => {
     const getDocuments = async () => {
@@ -20,11 +18,9 @@ export default function Page() {
 
   return (
     <div className="container mx-auto">
-      <DocViewFilter selectedRows={selectedRows} className="mb-4" />
-      <DataTable 
-        columns={columns} 
-        data={data} 
-        onSelectionChange={setSelectedRows}
+      <DataTable
+        columns={columns}
+        data={data}
       />
     </div>
   )

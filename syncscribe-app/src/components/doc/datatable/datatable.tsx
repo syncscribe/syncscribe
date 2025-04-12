@@ -2,36 +2,30 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel, getSortedRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   SortingState,
   useReactTable
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table";
 import {Button} from "@/components/ui/button.tsx";
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import {useSelectedRowsStore} from "@/store/useSelectedRowsStore";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  onSelectionChange?: (rows: TData[]) => void
 }
 
 export function DataTable<TData, TValue>(
   {
     columns,
-    data,
-    onSelectionChange
+    data
   }: Readonly<DataTableProps<TData, TValue>>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [rowSelection, setRowSelection] = useState({})
+  const setSelectedRows = useSelectedRowsStore((state) => state.setSelectedRows)
 
   const table = useReactTable({
     data,
@@ -40,18 +34,17 @@ export function DataTable<TData, TValue>(
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: (updatedSelection) => {
-      setRowSelection(updatedSelection);
-      if (onSelectionChange) {
-        const selectedRows = table.getFilteredSelectedRowModel().rows.map(row => row.original);
-        onSelectionChange(selectedRows);
-      }
-    },
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       rowSelection,
     },
   })
+
+  useEffect(() => {
+    const selectedRowsData = table.getFilteredSelectedRowModel().rows.map(row => row.original)
+    setSelectedRows(selectedRowsData)
+  }, [rowSelection, setSelectedRows, table])
 
   return (
     <div>
@@ -116,12 +109,6 @@ export function DataTable<TData, TValue>(
         >
           Next
         </Button>
-      </div>
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-
-        {JSON.stringify(table.getFilteredSelectedRowModel().rows)}
       </div>
     </div>
   )
