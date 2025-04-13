@@ -3,8 +3,8 @@ import {AppSidebar} from "@/components/nav/AppSidebar.tsx";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList} from "@/components/ui/breadcrumb.tsx";
-import DocViewFilter from "@/components/doc/DocViewFilter.tsx";
 import DocViewAction from "@/components/doc/DocViewAction.tsx";
+import DocViewType from "@/components/doc/DocViewType.tsx";
 
 export const Layout = () => {
   return (
@@ -29,8 +29,8 @@ export const Layout = () => {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className={"flex flex-row items-center"}>
-            <DocViewFilter/>
-            <DocViewAction className={"ml-auto"}/>
+            <DocViewAction/>
+            <DocViewType className={"ml-auto"}/>
           </div>
           <Outlet/>
         </div>
