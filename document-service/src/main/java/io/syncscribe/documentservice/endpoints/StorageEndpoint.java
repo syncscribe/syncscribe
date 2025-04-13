@@ -25,11 +25,13 @@ public class StorageEndpoint {
         this.storageService = storageService;
     }
 
-    @PostMapping(value = "/upload", params = { "docId" })
-    public ResponseEntity<FileUploadResponse> upload(@RequestParam String docId,
+    @PostMapping(value = "/upload", params = {"docId"})
+    public ResponseEntity<FileUploadResponse> upload(
+            @RequestParam String docId,
+            @RequestParam String password,
             @RequestParam("file") MultipartFile file) {
-        var doc = documentService.getDocument(docId);
         try {
+            var doc = documentService.getDocument(docId, password);
             return ResponseEntity.ok(storageService.upload(doc, file));
         } catch (Exception e) {
             log.error("Failed to upload file", e);

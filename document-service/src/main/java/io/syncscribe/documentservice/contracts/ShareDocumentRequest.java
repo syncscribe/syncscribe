@@ -1,8 +1,13 @@
 package io.syncscribe.documentservice.contracts;
 
-import java.util.List;
-
 import io.syncscribe.documentservice.datasource.models.ShareLinkRole;
 
-public record ShareDocumentRequest(List<DocumentVisitor> visitors, ShareLinkRole generalRole) {
+import java.time.OffsetDateTime;
+import java.util.List;
+
+public record ShareDocumentRequest(
+        ShareLinkRole role,
+        String password,
+        OffsetDateTime expiredAt,
+        List<String> recipients) {
 }

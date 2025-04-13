@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "emailClient", configuration = FeignConfig.class)
 public interface EmailClient {
     @PostMapping("/api/v1/emails/sendShareLink")
-    void sendEmail(ShareLinkMailRequest request);
+    void sendShareLinkEmail(ShareLinkMailRequest request);
 }

@@ -1,22 +1,11 @@
 package io.syncscribe.documentservice.datasource.models;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.syncscribe.documentservice.contracts.DocumentVisitor;
-import io.syncscribe.documentservice.datasource.converters.DocumentVisitorStringListConverter;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -26,29 +15,13 @@ import lombok.ToString;
 public class ShareLink {
     @Id
     private String id;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "document_id")
     private Document document;
     @Enumerated(EnumType.STRING)
-    private ShareLinkRole generalRole;
-    @Convert(converter = DocumentVisitorStringListConverter.class)
-    private List<DocumentVisitor> visitors;
+    private ShareLinkRole role;
+    private String password;
+    private OffsetDateTime expiredAt;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
-
-    public void addVisitor(String email, ShareLinkRole role) {
-        if (visitors == null) {
-            visitors = new ArrayList<>();
-        }
-        visitors.add(new DocumentVisitor(email, role));
-        updatedAt = OffsetDateTime.now();
-    }
-
-    public void removeVisitor(String email) {
-        if (visitors == null) {
-            return;
-        }
-        visitors.removeIf(visitor -> visitor.email().equals(email));
-        updatedAt = OffsetDateTime.now();
-    }
 }

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShareLinkRepository extends JpaRepository<ShareLink, String> {
-    void deleteAllByDocumentId(String documentId);
+    void deleteByDocumentId(String documentId);
     Optional<ShareLink> findByDocumentId(String documentId);
 }

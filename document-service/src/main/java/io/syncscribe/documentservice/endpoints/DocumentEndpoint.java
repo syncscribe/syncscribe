@@ -1,37 +1,23 @@
 package io.syncscribe.documentservice.endpoints;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.ImmutableMap;
-import io.syncscribe.common.contracts.ShareLinkMailRequest;
-import io.syncscribe.documentservice.components.openfeign.EmailClient;
-import io.syncscribe.documentservice.contracts.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.syncscribe.documentservice.components.documents.DocumentService;
-
+import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
+import io.syncscribe.documentservice.contracts.GetDocumentResponse;
+import io.syncscribe.documentservice.contracts.WriteDocumentRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/documents")
 public class DocumentEndpoint {
     private final DocumentService documentService;
-    private final EmailClient emailClient;
 
-    public DocumentEndpoint(DocumentService documentService, EmailClient emailClient) {
+    public DocumentEndpoint(DocumentService documentService) {
         this.documentService = documentService;
-        this.emailClient = emailClient;
     }
 
     @GetMapping(params = {"page", "size"})
@@ -52,16 +38,6 @@ public class DocumentEndpoint {
         }
     }
 
-    @PostMapping("/{id}/share")
-    public void shareDocument(@PathVariable String id, ShareDocumentRequest request) {
-        documentService.shareDocument(id, request);
-        var mailRequest = new ShareLinkMailRequest(
-                request.visitors().stream().map(DocumentVisitor::email).toList(),
-                ImmutableMap.of()
-        );
-        emailClient.sendEmail(mailRequest);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<String> write(@PathVariable String id, WriteDocumentRequest request) {
         try {
@@ -79,9 +55,15 @@ public class DocumentEndpoint {
     }
 
     @GetMapping("/{id}")
-    public GetDocumentResponse getDocument(@PathVariable String id) {
-        var doc = documentService.getDocument(id);
-        return new GetDocumentResponse(doc.getId(), doc.getName());
+    public ResponseEntity<GetDocumentResponse> getDocument(@PathVariable String id, @RequestParam String password) {
+        try {
+            var doc = documentService.getDocument(id, password);
+            var response = new GetDocumentResponse(doc.getId(), doc.getName());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Failed to get document", e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

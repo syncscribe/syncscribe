@@ -1,6 +1,7 @@
 package io.syncscribe.documentservice.components.documents;
 
 import io.syncscribe.common.auth.OAuthContext;
+import io.syncscribe.documentservice.components.security.EncryptionUtils;
 import io.syncscribe.documentservice.components.storage.StorageService;
 import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
 import io.syncscribe.documentservice.contracts.IllegalActionException;
@@ -19,16 +20,18 @@ public class DocumentService {
     private static final String DOCUMENT_NOT_FOUND_MSG = "Document not found";
     private final DocumentRepository documentRepository;
     private final DocumentLogRepository documentLogRepository;
-    private final ShareLinkRepository shareLinkRepository;
     private final StorageService storageService;
+    private final ShareLinkService shareLinkService;
 
     public DocumentService(
-            DocumentRepository documentRepository, DocumentLogRepository documentLogRepository,
-            ShareLinkRepository shareLinkRepository, StorageService storageService) {
+            DocumentRepository documentRepository,
+            DocumentLogRepository documentLogRepository,
+            StorageService storageService,
+            ShareLinkService shareLinkService) {
         this.documentRepository = documentRepository;
         this.documentLogRepository = documentLogRepository;
-        this.shareLinkRepository = shareLinkRepository;
         this.storageService = storageService;
+        this.shareLinkService = shareLinkService;
     }
 
     public String createDocument(CreateDocumentRequest request) throws Exception {
@@ -42,13 +45,8 @@ public class DocumentService {
     public String writeDocument(String id, WriteDocumentRequest request) throws Exception {
         var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
         var user = OAuthContext.getUser();
-        if (!doc.getOwnerId().equals(user.id())) {
-            var shareLink = shareLinkRepository.findByDocumentId(id)
-                    .orElseThrow(() -> new IllegalActionException("You are not allowed to modify this document"));
-            if (shareLink.getGeneralRole() == ShareLinkRole.READ
-                    || shareLink.getVisitors().stream().noneMatch(v -> v.email().equals(user.email()))) {
-                throw new IllegalActionException("You are not allowed to modify this document");
-            }
+        if (!doc.getOwnerId().equals(user.id()) && !shareLinkService.hasPublicShareLink(doc.getId())) {
+            throw new IllegalActionException("You are not allowed to modify this document");
         }
         doc.setUpdatedAt(OffsetDateTime.now());
         doc.setUpdatedBy(OAuthContext.getUser().id());
@@ -75,15 +73,14 @@ public class DocumentService {
         documentRepository.save(doc);
     }
 
-    public Document getDocument(String id) {
+    public Document getDocument(String id, String password) throws Exception {
         var doc = documentRepository.findById(id).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
         var user = OAuthContext.getUser();
         if (doc.getOwnerId().equals(user.id())) {
             return doc;
         }
-        var shareLink = shareLinkRepository.findByDocumentId(id)
-                .orElseThrow(() -> new RuntimeException("You are not allowed to access this document"));
-        if (shareLink.getVisitors().stream().anyMatch(v -> v.email().equals(user.email()))) {
+        var shareLink = shareLinkService.getShareLinkByDocument(id).orElseThrow(() -> new RuntimeException("You are not allowed to access this document"));
+        if ((shareLink.getExpiredAt() == null || shareLink.getExpiredAt().isAfter(OffsetDateTime.now())) && EncryptionUtils.decrypt(shareLink.getPassword()).equals(password)) {
             return doc;
         }
         throw new IllegalActionException("You are not allowed to access this document");
@@ -92,14 +89,5 @@ public class DocumentService {
     public List<Document> listDocuments(int page, int size) {
         var pageResult = documentRepository.findAll(PageRequest.of(page, size));
         return pageResult.getContent();
-    }
-
-    public void shareDocument(String docId, ShareDocumentRequest request) {
-        var doc = documentRepository.findById(docId).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
-        var shareLink = shareLinkRepository.findByDocumentId(docId)
-                .orElse(doc.createShareLink(request.visitors(), request.generalRole()));
-        shareLink.setGeneralRole(request.generalRole());
-        shareLink.setVisitors(request.visitors());
-        shareLinkRepository.save(shareLink);
     }
 }
