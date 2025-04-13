@@ -7,9 +7,9 @@ flowchart TD
     frontend("Frontend (UI)") --> gateway("API & WebSocket Gateway")
     gateway --> oauth("OAuth Server")
     gateway --> collaboration("Collaboration Service")
-    document --> storage("Storage: S3 / Minio/ FS")
-    document --> email("Email Service")
-    gateway --> document("Document Service")
+    file --> storage("Storage: S3 / Minio/ FS")
+    file --> email("Email Service")
+    gateway --> file("File Service")
     gateway --> exporter("Export Service")
     exporter --> doctype("docx/pdf/image")
 

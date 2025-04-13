@@ -13,7 +13,7 @@ spring:
     port: 587
     username: hoangna1204.dev@gmail.com
     password: uysc nxuk zqwm ggic
-    sender: support@syncscribe.com
+    sender: hoangna1204.dev@gmail.com
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true

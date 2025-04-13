@@ -1,6 +1,18 @@
+app:
+  secretKey: QHt8RSvlB4Tq2ENg
+minio:
+  endpoint: http://localhost:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: document
 spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          emailService.url: http://localhost:8000
   datasource:
-    url: jdbc:postgresql://localhost:5432/idp
+    url: jdbc:postgresql://localhost:5432/files
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -15,5 +27,4 @@ spring:
           issuer: http://localhost:8080/realms/syncscribe
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer}/protocol/openid-connect/certs
 server:
-  port: 80
-    
+  port: 8001
