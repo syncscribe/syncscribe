@@ -1,6 +1,7 @@
 package io.syncscribe.documentservice.components.documents;
 
 import io.syncscribe.common.auth.OAuthContext;
+import io.syncscribe.documentservice.components.AppConfig;
 import io.syncscribe.documentservice.components.security.EncryptionUtils;
 import io.syncscribe.documentservice.components.storage.StorageService;
 import io.syncscribe.documentservice.contracts.CreateDocumentRequest;
@@ -22,16 +23,18 @@ public class DocumentService {
     private final DocumentLogRepository documentLogRepository;
     private final StorageService storageService;
     private final ShareLinkService shareLinkService;
+    private final AppConfig appConfig;
 
     public DocumentService(
             DocumentRepository documentRepository,
             DocumentLogRepository documentLogRepository,
             StorageService storageService,
-            ShareLinkService shareLinkService) {
+            ShareLinkService shareLinkService, AppConfig appConfig) {
         this.documentRepository = documentRepository;
         this.documentLogRepository = documentLogRepository;
         this.storageService = storageService;
         this.shareLinkService = shareLinkService;
+        this.appConfig = appConfig;
     }
 
     public String createDocument(CreateDocumentRequest request) throws Exception {
@@ -80,7 +83,8 @@ public class DocumentService {
             return doc;
         }
         var shareLink = shareLinkService.getShareLinkByDocument(id).orElseThrow(() -> new RuntimeException("You are not allowed to access this document"));
-        if ((shareLink.getExpiredAt() == null || shareLink.getExpiredAt().isAfter(OffsetDateTime.now())) && EncryptionUtils.decrypt(shareLink.getPassword()).equals(password)) {
+        if ((shareLink.getExpiredAt() == null || shareLink.getExpiredAt().isAfter(OffsetDateTime.now()))
+                && EncryptionUtils.decrypt(shareLink.getPassword(), appConfig.getSecretKey()).equals(password)) {
             return doc;
         }
         throw new IllegalActionException("You are not allowed to access this document");
