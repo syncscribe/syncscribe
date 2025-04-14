@@ -1,3 +1,6 @@
+management:
+  server:
+    port: 8102
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/emails
@@ -20,11 +23,14 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
-          issuer: http://localhost:8080/realms/syncscribe
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer}/protocol/openid-connect/certs
+        opaquetoken:
+          introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
+          client-id: 315691793633050628
+          client-secret: 64kxK5ShaLkmFtvrF1POklh7w4ee0ZsKzYceDteG2koBhM1e5v6ghdgWAgjJhbSK
   thymeleaf:
     cache: true
 server:
-  port: 8000
+  port: 8002
+zitadel:
+  baseUrl: http://localhost:8080
     

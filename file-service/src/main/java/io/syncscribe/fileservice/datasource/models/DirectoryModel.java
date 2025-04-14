@@ -26,11 +26,14 @@ public class DirectoryModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
+    @ToString.Exclude
     private DirectoryModel parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<DirectoryModel> children = new ArrayList<>();
 
     @OneToMany(mappedBy = "directory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<FileModel> files = new ArrayList<>();
 }

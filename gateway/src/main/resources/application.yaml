@@ -1,15 +1,56 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/users
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
+  data:
+    redis:
+      url: http://localhost
+      port: 6379
+      password: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: file-service
+          uri: http://localhost:8001
+          predicates:
+            - Path=/file/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: fileServiceCircuitBreaker
+                fallbackUri: forward:/api/v1/fallback/file
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10  # 10 requests/sec
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@remoteAddressKeyResolver}"
+        - id: email-service
+          uri: http://localhost:8002
+          predicates:
+            - Path=/email/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: emailServiceCircuitBreaker
+                fallbackUri: forward:/api/v1/fallback/email
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@remoteAddressKeyResolver}"
+      default-filters:
+        - TokenRelay
+
 server:
   port: 8000
-security:
-  jwt:
-    secret-key: 9a4f2c8d3b7a1e6f45c8a0b3f267d8b1d4e6f3c8a9d2b5f8e3a9c8b5f6v8a3d9
-    expiration-time: 36000000

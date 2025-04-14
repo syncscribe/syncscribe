@@ -5,7 +5,7 @@ services:
     ports:
       - 5432:5432
     environment:
-        POSTGRES_MULTIPLE_DATABASES: keycloak,users,documents,collaborations
+        POSTGRES_MULTIPLE_DATABASES: zitadel,idp,files,emails
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
@@ -17,31 +17,28 @@ services:
       - ss-net
     volumes:
       - ss-db:/var/lib/postgresql/data
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.1
-    container_name: ss_keycloak
-    environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://ss_db:5432/keycloak
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_STRICT: false
-      KC_HOSTNAME_STRICT_HTTPS: false
-
-      KC_LOG_LEVEL: info
-      KC_METRICS_ENABLED: true
-      KC_HEALTH_ENABLED: true
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    command: start-dev
-    depends_on:
-      - ss-db
-    ports:
-      - 8080:8080
+  zitadel:
+    restart: 'always'
     networks:
       - ss-net
+    image: 'ghcr.io/zitadel/zitadel:latest'
+    command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
+    environment:
+      ZITADEL_DATABASE_POSTGRES_HOST: ss_db
+      ZITADEL_DATABASE_POSTGRES_PORT: 5432
+      ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_USERNAME: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: disable
+      ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: postgres
+      ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: postgres
+      ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
+      ZITADEL_EXTERNALSECURE: false
+    depends_on:
+      ss-db:
+        condition: 'service_healthy'
+    ports:
+      - '8080:8080'
   minio:
     image: minio/minio:RELEASE.2025-04-08T15-41-24Z
     ports:
@@ -57,9 +54,18 @@ services:
       test: curl --fail http://127.0.0.1:9000/minio/health/live || exit 1
     networks:
       - ss-net
+  cache:
+    image: redis:7.4.2
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - ss-cache:/data
 networks:
   ss-net:
     driver: bridge
 volumes:
   ss-db:
   ss-minio:
+  ss-cache:

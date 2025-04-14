@@ -28,6 +28,11 @@ public class FileEndpoint {
         this.minioService = minioService;
     }
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World";
+    }
+
     @GetMapping(params = {"page", "size", "root"})
     public ListFileDirectoryResponse list(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) String root) {
         return fileService.listFiles(page, size, root);
