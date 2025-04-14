@@ -22,17 +22,17 @@ public class ShareLinkService {
     }
 
     public Optional<ShareLink> getShareLinkByDocument(String docId) {
-        return shareLinkRepository.findByFileModelId(docId);
+        return shareLinkRepository.findByFileId(docId);
     }
 
     public boolean hasPublicShareLink(String docId) {
-        var shareLink = shareLinkRepository.findByFileModelId(docId).orElse(null);
+        var shareLink = shareLinkRepository.findByFileId(docId).orElse(null);
         return shareLink != null && shareLink.getRole() == ShareLinkRole.WRITE;
     }
 
     public String share(String docId) {
         var doc = fileRepository.findById(docId).orElseThrow(() -> new RuntimeException(DOCUMENT_NOT_FOUND_MSG));
-        var shareLink = shareLinkRepository.findByFileModelId(docId)
+        var shareLink = shareLinkRepository.findByFileId(docId)
                 .orElse(doc.createShareLink());
         shareLinkRepository.save(shareLink);
         return shareLink.getId();

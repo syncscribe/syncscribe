@@ -13,11 +13,14 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-@Table(name = "directories")
+@Table(name = "directories", indexes = {
+        @Index(name = "parent_id_idx", columnList = "parent_id")
+})
 public class DirectoryModel {
     @Id
     private String id;
     private String name;
+    private String ownerId;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
@@ -28,6 +31,6 @@ public class DirectoryModel {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DirectoryModel> children = new ArrayList<>();
 
-    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "directory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FileModel> files = new ArrayList<>();
 }

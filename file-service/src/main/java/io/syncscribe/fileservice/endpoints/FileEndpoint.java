@@ -2,7 +2,8 @@ package io.syncscribe.fileservice.endpoints;
 
 import io.syncscribe.fileservice.components.files.FileService;
 import io.syncscribe.fileservice.components.storage.MinioService;
-import io.syncscribe.fileservice.contracts.GetFileResponse;
+import io.syncscribe.fileservice.contracts.File;
+import io.syncscribe.fileservice.contracts.ListFileDirectoryResponse;
 import io.syncscribe.fileservice.datasource.models.FileModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
@@ -14,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -28,11 +28,9 @@ public class FileEndpoint {
         this.minioService = minioService;
     }
 
-    @GetMapping(params = {"page", "size"})
-    public List<GetFileResponse> list(@RequestParam int page, @RequestParam int size) {
-        return fileService.listFiles(page, size).stream()
-                .map(doc -> new GetFileResponse(doc.getId(), doc.getFileName()))
-                .toList();
+    @GetMapping(params = {"page", "size", "root"})
+    public ListFileDirectoryResponse list(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) String root) {
+        return fileService.listFiles(page, size, root);
     }
 
     @DeleteMapping("/{id}")
@@ -46,11 +44,11 @@ public class FileEndpoint {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetFileResponse> get(@PathVariable String id, @RequestParam String password) {
+    @GetMapping(value = "/{id}", params = {"password"})
+    public ResponseEntity<File> get(@PathVariable String id, @RequestParam(required = false) String password) {
         try {
-            var doc = fileService.getFile(id, password);
-            var response = new GetFileResponse(doc.getId(), doc.getFileName());
+            var file = fileService.getFile(id, password);
+            var response = File.from(file);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Failed to get document", e);
@@ -58,8 +56,8 @@ public class FileEndpoint {
         }
     }
 
-    @GetMapping("/{id}/download")
-    public ResponseEntity<InputStreamResource> download(@PathVariable String id, @RequestParam String password) {
+    @GetMapping(value = "/{id}/download", params = {"password"})
+    public ResponseEntity<InputStreamResource> download(@PathVariable String id, @RequestParam(required = false) String password) {
         try {
             var doc = fileService.getFile(id, password);
             var data = minioService.getFile(doc.getUrl());

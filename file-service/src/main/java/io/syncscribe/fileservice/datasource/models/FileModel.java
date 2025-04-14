@@ -26,7 +26,7 @@ public class FileModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "directory_id")
-    private DirectoryModel directoryModel;
+    private DirectoryModel directory;
 
     private Boolean markForDelete;
     private OffsetDateTime createdAt;
