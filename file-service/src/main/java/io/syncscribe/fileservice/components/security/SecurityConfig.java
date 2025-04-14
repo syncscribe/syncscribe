@@ -14,11 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final OpaqueTokenIntrospector introspector;
-
-    public SecurityConfig(OpaqueTokenIntrospector introspector) {
-        this.introspector = introspector;
-    }
+    //private final OpaqueTokenIntrospector introspector;
+//
+    //public SecurityConfig(OpaqueTokenIntrospector introspector) {
+    //    this.introspector = introspector;
+    //}
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +35,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    private OpaqueTokenIntrospector introspector() {
-        return new ZitadelOpaqueTokenIntrospector(introspector);
-    }
+    //private OpaqueTokenIntrospector introspector() {
+    //    return new ZitadelOpaqueTokenIntrospector(introspector);
+    //}
 }

@@ -1,6 +1,6 @@
 package io.syncscribe.emailservice.datasource.models;
 
-import io.syncscribe.common.jpa.StringMapConverter;
+import io.syncscribe.emailservice.datasource.converters.StringMapConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
