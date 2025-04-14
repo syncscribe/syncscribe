@@ -26,6 +26,7 @@ public class FileModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "directory_id")
+    @ToString.Exclude
     private DirectoryModel directory;
 
     private Boolean markForDelete;
