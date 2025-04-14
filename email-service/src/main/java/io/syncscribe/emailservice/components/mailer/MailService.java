@@ -18,14 +18,12 @@ import java.util.ArrayList;
 @Slf4j
 @Service
 public class MailService {
-    private final MailProps mailProps;
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final EmailRepository emailRepository;
 
-    public MailService(JavaMailSender mailSender, MailProps mailProps, TemplateEngine templateEngine, EmailRepository emailRepository) {
+    public MailService(JavaMailSender mailSender, TemplateEngine templateEngine, EmailRepository emailRepository) {
         this.mailSender = mailSender;
-        this.mailProps = mailProps;
         this.templateEngine = templateEngine;
         this.emailRepository = emailRepository;
     }
@@ -62,7 +60,6 @@ public class MailService {
         helper.setTo(recipient);
         helper.setSubject(subject);
         helper.setText(content, true);
-        helper.setFrom(mailProps.getSender());
         mailSender.send(message);
     }
 }

@@ -1,4 +1,4 @@
-package io.syncscribe.userservice.components.security;
+package io.syncscribe.emailservice.components.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

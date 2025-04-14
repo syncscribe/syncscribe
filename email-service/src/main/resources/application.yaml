@@ -14,19 +14,20 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: hoangna1204.dev@gmail.com
-    password: uysc nxuk zqwm ggic
-    sender: hoangna1204.dev@gmail.com
+    username: <gmail_user>
+    password: <app_passwords>
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
   security:
     oauth2:
       resourceserver:
-        opaquetoken:
-          introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
-          client-id: 315691793633050628
-          client-secret: 64kxK5ShaLkmFtvrF1POklh7w4ee0ZsKzYceDteG2koBhM1e5v6ghdgWAgjJhbSK
+        jwt:
+          issuer-uri: ${zitadel.baseUrl}
+        #opaquetoken:
+        #  introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
+        #  client-id: 315691793633050628
+        #  client-secret: 64kxK5ShaLkmFtvrF1POklh7w4ee0ZsKzYceDteG2koBhM1e5v6ghdgWAgjJhbSK
   thymeleaf:
     cache: true
 server:
