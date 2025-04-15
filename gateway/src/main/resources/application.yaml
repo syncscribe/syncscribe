@@ -51,6 +51,14 @@ spring:
                 key-resolver: "#{@remoteAddressKeyResolver}"
       default-filters:
         - TokenRelay
-
+  security:
+    oauth2:
+      client:
+        registration:
+          jwt:
+            provider: zitadel-jwt
+            authorization-grant-type: client_credentials
+            client-id:
+            client-secret:
 server:
   port: 8000
