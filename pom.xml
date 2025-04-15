@@ -17,6 +17,7 @@
         <openapi.version>2.8.5</openapi.version>
         <logstash.version>8.0</logstash.version>
         <tika.version>3.1.0</tika.version>
+        <lettuce.version>6.5.5.RELEASE</lettuce.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

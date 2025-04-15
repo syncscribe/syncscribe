@@ -1,3 +1,6 @@
+management:
+  server:
+    port: 8103
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/idp
@@ -12,8 +15,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer: http://localhost:8080/realms/syncscribe
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer}/protocol/openid-connect/certs
+          issuer-uri: ${zitadel.baseUrl}
 server:
-  port: 80
-    
+  port: 8003
+zitadel:
+  baseUrl: http://localhost:8080

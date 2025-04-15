@@ -33,10 +33,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${zitadel.baseUrl}
-        #opaquetoken:
-        #  introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
-        #  client-id: 315643496591589380
-        #  client-secret: Fcxi5Ub3zQlMVwLH7P2iBzRJAnX2zv8uZHlABNuBpUP7WL8BShCTjvyJzNlauyt4
 server:
   port: 8001
 zitadel:

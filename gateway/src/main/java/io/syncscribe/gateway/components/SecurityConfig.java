@@ -13,14 +13,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http.authorizeExchange(exchange
-                        -> exchange.pathMatchers(
+        http.authorizeExchange(spec
+                        -> spec.pathMatchers(
+                                "/login/**",
+                                "/oauth2/**",
                                 "/fallback/**",
                                 "/file-service/actuator/**",
                                 "/email-service/actuator/**")
                         .permitAll()
                         .anyExchange().authenticated())
-                .oauth2ResourceServer(spec -> spec.jwt(Customizer.withDefaults()));
+                .oauth2Client(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults());
         return http.build();
     }
 }

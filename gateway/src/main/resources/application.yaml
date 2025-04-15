@@ -1,7 +1,11 @@
 spring:
+  session:
+    redis:
+      namespace: spring:session:gateway
+      repository-type: indexed
   data:
     redis:
-      url: http://localhost
+      host: localhost
       port: 6379
       password: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
   cloud:
@@ -55,10 +59,14 @@ spring:
     oauth2:
       client:
         registration:
-          jwt:
-            provider: zitadel-jwt
-            authorization-grant-type: client_credentials
-            client-id:
-            client-secret:
+          zitadel:
+            client-id: gateway
+            client-secret: PwM8PYdLkZFYleLQ6kDFusAqrF0uJ61Pm026hd4IgZeWZxUicjBqbTlron5DGLwx
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+        provider:
+          zitadel:
+            issuer-uri: http://localhost:8080
 server:
   port: 8000
