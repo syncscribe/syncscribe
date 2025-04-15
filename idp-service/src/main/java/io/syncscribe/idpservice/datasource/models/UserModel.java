@@ -15,6 +15,7 @@ import lombok.ToString;
 public class UserModel {
     @Id
     private String id;
+    private String username;
     private String fullName;
     private String email;
     private String avatarPath;

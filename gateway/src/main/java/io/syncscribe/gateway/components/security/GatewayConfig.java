@@ -1,4 +1,4 @@
-package io.syncscribe.gateway.components;
+package io.syncscribe.gateway.components.security;
 
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;
