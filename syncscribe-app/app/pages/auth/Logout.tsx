@@ -1,26 +1,23 @@
-import { LoginForm } from "@/components/auth/LoginForm.tsx";
-import { GalleryVerticalEnd } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
-import { useNavigate } from "react-router-dom";
+import { useAuthUserStore } from "@/store/useAuthUserStore";
+import { GalleryVerticalEnd } from "lucide-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-type LoginProps = {
-  login: () => void;
+type LogoutProps = {
+  logout: () => void;
 };
 
-const sso = true;
-
-const LoginPage = ({ login }: LoginProps) => {
+const LogoutPage = ({ logout }: LogoutProps) => {
   const navigate = useNavigate();
+  const clearUser = useAuthUserStore((state) => state.clearUser);
 
   useEffect(() => {
-    if (sso) {
-      const timer = setTimeout(() => {
-        login();
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  });
+    // Only clear user and call logout, do not navigate
+    logout();
+    clearUser();
+    // No manual navigation, let Zitadel handle redirect
+  }, [logout, clearUser]);
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
@@ -35,15 +32,12 @@ const LoginPage = ({ login }: LoginProps) => {
           </div>
           SyncScribe.io
         </Button>
-        {sso && (
-          <div className={"flex flex-col items-center justify-center"}>
-            Loading...
-          </div>
-        )}
-        {!sso && <LoginForm />}
+        <div className={"flex flex-col items-center justify-center"}>
+          Logging out...
+        </div>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default LogoutPage;

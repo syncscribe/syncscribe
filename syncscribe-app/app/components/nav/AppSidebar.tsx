@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import {HardDrive, Home, Star, Trash2Icon, Users,} from "lucide-react"
-import {NavMain} from "@/components/nav/NavMain.tsx"
-import {NavUser} from "@/components/nav/NavUser.tsx"
-import {Logo} from "@/components/nav/Logo.tsx"
-import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} from "@/components/ui/sidebar.tsx"
-import {NavLabels} from "@/components/nav/NavLabels.tsx";
+import { HardDrive, Home, Star, Trash2Icon, Users } from "lucide-react";
+import { NavMain } from "@/components/nav/NavMain.tsx";
+import { NavUser } from "@/components/nav/NavUser.tsx";
+import { Logo } from "@/components/nav/Logo.tsx";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from "@/components/ui/sidebar.tsx";
+import { NavLabels } from "@/components/nav/NavLabels.tsx";
 
 const data = {
   main: [
@@ -35,37 +41,33 @@ const data = {
       icon: Trash2Icon,
     },
   ],
-}
+};
 
 const labels = [
   {
     name: "Architecture",
-    color: '#0042aa'
+    color: "#0042aa",
   },
   {
     name: "Personal",
-    color: '#b51a00'
-  }
-]
+    color: "#b51a00",
+  },
+];
 
-type SidebarProps = {
-  signout: () => void
-}
-
-export function AppSidebar({signout}: SidebarProps) {
+export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Logo/>
+        <Logo />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain projects={data.main}/>
-        <NavLabels labels={labels}/>
+        <NavMain projects={data.main} />
+        <NavLabels labels={labels} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser signout={signout}/>
+        <NavUser />
       </SidebarFooter>
-      <SidebarRail/>
+      <SidebarRail />
     </Sidebar>
-  )
+  );
 }

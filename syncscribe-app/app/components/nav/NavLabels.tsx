@@ -1,23 +1,22 @@
-"use client"
+"use client";
 
-import {Tag,} from "lucide-react"
+import { Tag } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar.tsx"
+} from "@/components/ui/sidebar.tsx";
 
 export function NavLabels({
   labels,
 }: Readonly<{
   labels: {
-    name: string
-    color: string
-  }[]
+    name: string;
+    color: string;
+  }[];
 }>) {
-
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Labels</SidebarGroupLabel>
@@ -34,5 +33,5 @@ export function NavLabels({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
