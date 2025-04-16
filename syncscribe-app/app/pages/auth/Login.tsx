@@ -2,9 +2,20 @@ import {LoginForm} from "@/components/auth/LoginForm.tsx";
 import {GalleryVerticalEnd} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
-const LoginPage = () => {
+type LoginProps = {
+  login: () => void
+}
+
+const sso = true;
+
+const LoginPage = ({login}: LoginProps) => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    login();
+  }, [login]);
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
@@ -17,7 +28,8 @@ const LoginPage = () => {
           </div>
           SyncScribe.io
         </Button>
-        <LoginForm />
+        {sso && <div>Loading...</div>}
+        {!sso && <LoginForm/>}
       </div>
     </div>
   );

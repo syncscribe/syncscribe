@@ -6,7 +6,11 @@ import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList} from "@/comp
 import DocViewAction from "@/components/doc/DocViewAction.tsx";
 import DocViewType from "@/components/doc/DocViewType.tsx";
 
-export const Layout = () => {
+type LayoutProps = {
+  signout: () => void;
+}
+
+export const Layout = ({signout}: LayoutProps) => {
   return (
     <SidebarProvider>
       <AppSidebar/>

@@ -1,9 +1,9 @@
 management:
   server:
-    port: 8103
+    port: 8100
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/idp
+    url: jdbc:postgresql://localhost:5432/syncscribe
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,9 +16,9 @@ spring:
       resourceserver:
         opaquetoken:
           introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
-          client-id: 315804228780097540
-          client-secret: 5lthTy35k1qAXbCFMq1bd13ByqbJod5AUhpCQFsOrtvK4gjMeoI3kPjhmHeSojSr
+          client-id: 315830414038073348
+          client-secret: AyQKO6d2DlT8kwMlVpDgLBnafotchcycP4wbW7IHl7aXk1BMipUKiUh4sFtkKjRz
 server:
-  port: 8003
+  port: 8000
 zitadel:
   baseUrl: http://localhost:8080

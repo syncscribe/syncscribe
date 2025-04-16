@@ -7,7 +7,7 @@ minio:
   bucketName: document
 management:
   server:
-    port: 8101
+    port: 8102
 spring:
   jackson:
     serialization:
@@ -31,9 +31,11 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
-          issuer-uri: ${zitadel.baseUrl}
+        opaquetoken:
+          introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
+          client-id: 315804175931867140
+          client-secret: cbtdOmQ7U5aY6eAYjYX3MJ5Zz8zNm87JXP0Tg2llX6YWPj21TMqiOfe3ypFrC2Po
 server:
-  port: 8001
+  port: 8002
 zitadel:
   baseUrl: http://localhost:8080

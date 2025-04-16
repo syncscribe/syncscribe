@@ -23,8 +23,8 @@ spring:
             allowedHeaders: "*"
             allowCredentials: true
       routes:
-        - id: file-service
-          uri: http://localhost:8001
+        - id: fileService
+          uri: http://localhost:8002
           predicates:
             - Path=/file/**
           filters:
@@ -38,8 +38,8 @@ spring:
                 redis-rate-limiter.replenishRate: 10  # 10 requests/sec
                 redis-rate-limiter.burstCapacity: 20
                 key-resolver: "#{@remoteAddressKeyResolver}"
-        - id: email-service
-          uri: http://localhost:8002
+        - id: emailService
+          uri: http://localhost:8003
           predicates:
             - Path=/email/**
           filters:
@@ -54,19 +54,7 @@ spring:
                 redis-rate-limiter.burstCapacity: 10
                 key-resolver: "#{@remoteAddressKeyResolver}"
       default-filters:
-        - TokenRelay
-  security:
-    oauth2:
-      client:
-        registration:
-          zitadel:
-            client-id: gateway
-            client-secret: PwM8PYdLkZFYleLQ6kDFusAqrF0uJ61Pm026hd4IgZeWZxUicjBqbTlron5DGLwx
-            scope: openid, profile, email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            authorization-grant-type: authorization_code
-        provider:
-          zitadel:
-            issuer-uri: http://localhost:8080
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - SaveSession
 server:
-  port: 8000
+  port: 8001

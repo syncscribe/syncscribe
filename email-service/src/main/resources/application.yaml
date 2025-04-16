@@ -1,6 +1,6 @@
 management:
   server:
-    port: 8102
+    port: 8103
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/emails
@@ -14,24 +14,22 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: <gmail_user>
-    password: <app_passwords>
+    username: hoangna1204.dev@gmail.com
+    password: yvxe oxlo yifl haho
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
   security:
     oauth2:
       resourceserver:
-        jwt:
-          issuer-uri: ${zitadel.baseUrl}
-        #opaquetoken:
-        #  introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
-        #  client-id: 315691793633050628
-        #  client-secret: 64kxK5ShaLkmFtvrF1POklh7w4ee0ZsKzYceDteG2koBhM1e5v6ghdgWAgjJhbSK
+        opaquetoken:
+          introspection-uri: ${zitadel.baseUrl}/oauth/v2/introspect
+          client-id: 315804228780097540
+          client-secret: 5lthTy35k1qAXbCFMq1bd13ByqbJod5AUhpCQFsOrtvK4gjMeoI3kPjhmHeSojSr
   thymeleaf:
     cache: true
 server:
-  port: 8002
+  port: 8003
 zitadel:
   baseUrl: http://localhost:8080
     
