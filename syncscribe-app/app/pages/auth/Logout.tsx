@@ -13,10 +13,8 @@ const LogoutPage = ({ logout }: LogoutProps) => {
   const clearUser = useAuthUserStore((state) => state.clearUser);
 
   useEffect(() => {
-    // Only clear user and call logout, do not navigate
     logout();
     clearUser();
-    // No manual navigation, let Zitadel handle redirect
   }, [logout, clearUser]);
 
   return (
