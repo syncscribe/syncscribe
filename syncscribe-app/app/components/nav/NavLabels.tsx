@@ -11,12 +11,12 @@ import {
 
 export function NavLabels({
   labels,
-}: {
+}: Readonly<{
   labels: {
     name: string
     color: string
   }[]
-}) {
+}>) {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

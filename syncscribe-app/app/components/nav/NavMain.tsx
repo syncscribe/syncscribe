@@ -11,13 +11,13 @@ import {
 
 export function NavMain({
   projects,
-}: {
+}: Readonly<{
   projects: {
     name: string
     url: string
     icon: LucideIcon
   }[]
-}) {
+}>) {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

@@ -63,7 +63,7 @@ export default function TagAction() {
               <SelectContent className={"w-full"}>
                 <SelectGroup className={"w-full"}>
                   {colors.map(color => (
-                    <SelectItem value={color.code}><Tag color={color.code}/> {color.name}</SelectItem>
+                    <SelectItem key={color.code} value={color.code}><Tag color={color.code}/> {color.name}</SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>

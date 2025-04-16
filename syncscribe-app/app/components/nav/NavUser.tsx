@@ -32,12 +32,12 @@ import {
 
 export function NavUser({
   user,
-}: {
+}: Readonly<{
   user: {
     name: string
     email: string
   }
-}) {
+}>) {
   const { isMobile } = useSidebar()
 
   return (
