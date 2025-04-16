@@ -29,35 +29,42 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar.tsx"
+import {useAuthUserStore} from "@/store/useAuthUserStore.ts";
 
-export function NavUser({
-  user,
-}: Readonly<{
-  user: {
-    name: string
-    email: string
+type NavUserProps = {
+  signout: () => void
+}
+
+export function NavUser({signout}: NavUserProps) {
+  const user = useAuthUserStore((state) => state.user)!
+  const {isMobile} = useSidebar()
+
+  const getInitials = (name: string | undefined) => {
+    if (name === undefined) return '';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 0) return '';
+    if (words.length === 1) return words[0][0].toUpperCase();
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
   }
-}>) {
-  const { isMobile } = useSidebar()
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage alt={user.name} />
-                <AvatarFallback className="rounded-lg">HN</AvatarFallback>
+                <AvatarImage alt={user.profile.name}/>
+                <AvatarFallback className="rounded-lg">{getInitials(user.profile.name)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{user.profile.name}</span>
+                <span className="truncate text-xs">{user.profile.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-4"/>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -69,40 +76,40 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage alt={user.profile.name}/>
+                  <AvatarFallback className="rounded-lg">{getInitials(user.profile.name)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{user.profile.name}</span>
+                  <span className="truncate text-xs">{user.profile.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator/>
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
+                <Sparkles/>
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator/>
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
+                <BadgeCheck/>
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard />
+                <CreditCard/>
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell />
+                <Bell/>
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
+            <DropdownMenuSeparator/>
+            <DropdownMenuItem onClick={signout}>
+              <LogOut/>
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

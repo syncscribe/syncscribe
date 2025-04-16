@@ -14,8 +14,14 @@ const LoginPage = ({login}: LoginProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    login();
-  }, [login]);
+    console.log("Login.tsx")
+    function doLogin() {
+      if (sso) {
+        login();
+      }
+    }
+    doLogin();
+  });
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
@@ -28,7 +34,7 @@ const LoginPage = ({login}: LoginProps) => {
           </div>
           SyncScribe.io
         </Button>
-        {sso && <div>Loading...</div>}
+        {sso && <div className={"flex flex-col items-center justify-center"}>Loading...</div>}
         {!sso && <LoginForm/>}
       </div>
     </div>

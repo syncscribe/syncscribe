@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {HardDrive, Home, Star, Trash2Icon, Users,} from "lucide-react"
 import {NavMain} from "@/components/nav/NavMain.tsx"
 import {NavUser} from "@/components/nav/NavUser.tsx"
@@ -9,34 +8,30 @@ import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} fro
 import {NavLabels} from "@/components/nav/NavLabels.tsx";
 
 const data = {
-  user: {
-    name: "Hoang Nguyen",
-    email: "hoangna1204@gmail.com",
-  },
   main: [
     {
       name: "Home",
-      url: "/",
+      url: "/home",
       icon: Home,
     },
     {
       name: "My Documents",
-      url: "/documents",
+      url: "/home/documents",
       icon: HardDrive,
     },
     {
       name: "Shared",
-      url: "/documents?filter=shared",
+      url: "/home/documents?filter=shared",
       icon: Users,
     },
     {
       name: "Starred",
-      url: "/documents?filter=starred",
+      url: "/home/documents?filter=starred",
       icon: Star,
     },
     {
       name: "Recycle bin",
-      url: "/documents?filter=trash",
+      url: "/home/documents?filter=trash",
       icon: Trash2Icon,
     },
   ],
@@ -53,20 +48,24 @@ const labels = [
   }
 ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type SidebarProps = {
+  signout: () => void
+}
+
+export function AppSidebar({signout}: SidebarProps) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <Logo/>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain projects={data.main} />
-        <NavLabels labels={labels} />
+        <NavMain projects={data.main}/>
+        <NavLabels labels={labels}/>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser signout={signout}/>
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail/>
     </Sidebar>
   )
 }

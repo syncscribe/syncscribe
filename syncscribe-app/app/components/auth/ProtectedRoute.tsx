@@ -1,12 +1,14 @@
 import {Navigate, Outlet} from "react-router-dom";
+import {useAuthUserStore} from "@/store/useAuthUserStore.ts";
 
 type ProtectedRouteProps = {
-  isAuthenticated: boolean | null;
   redirectPath?: string;
 }
 
-const ProtectedRoute = ({isAuthenticated, redirectPath = '/login'}: ProtectedRouteProps) => {
-  if (!isAuthenticated) {
+const ProtectedRoute = ({redirectPath = '/login'}: ProtectedRouteProps) => {
+  const user = useAuthUserStore(state => state.user)
+  console.log("ProtectedRoute: ", user)
+  if (!user) {
     return <Navigate to={redirectPath} replace/>;
   }
 

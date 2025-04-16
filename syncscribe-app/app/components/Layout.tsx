@@ -13,7 +13,7 @@ type LayoutProps = {
 export const Layout = ({signout}: LayoutProps) => {
   return (
     <SidebarProvider>
-      <AppSidebar/>
+      <AppSidebar signout={signout}/>
       <SidebarInset>
         <header
           className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

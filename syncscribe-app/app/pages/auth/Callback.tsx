@@ -30,7 +30,9 @@ const Callback = ({
       <Navigate to={"/home"}></Navigate>
     );
   } else {
-    return <div>Loading...</div>;
+    return <div className={"w-full h-[100vh] flex flex-col items-center justify-center text-xl"}>
+      Loading...
+    </div>;
   }
 };
 

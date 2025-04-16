@@ -10,6 +10,8 @@ import DocEditor from "@/pages/DocEditor.tsx";
 import DocView from "@/pages/DocView.tsx";
 import Callback from "@/pages/auth/Callback.tsx";
 import ProtectedRoute from "@/components/auth/ProtectedRoute.tsx";
+import NotFound from "@/pages/NotFound.tsx";
+import {useAuthUserStore} from "@/store/useAuthUserStore.ts";
 
 function App() {
   const config: ZitadelConfig = {
@@ -32,15 +34,32 @@ function App() {
   }
 
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const setUser = useAuthUserStore((state) => state.setUser)
 
   useEffect(() => {
     zitadel.userManager.getUser().then((user) => {
+      console.log("App: ", user);
       if (user) {
         setAuthenticated(true);
+        setUser(user)
       } else {
         setAuthenticated(false);
       }
     })
+
+    if (window.location.href.includes('id_token') || window.location.href.includes('code')) {
+        zitadel.userManager.signinRedirectCallback()
+          .then((user) => {
+            if (user) {
+              console.log('Redirect callback user', user);
+              setAuthenticated(true);
+              setUser(user); // Store the entire user object
+            }
+          })
+          .catch((error) => {
+            console.error('Sign-in error', error);
+          });
+      }
   }, [zitadel]);
 
   return (
@@ -56,7 +75,7 @@ function App() {
       <Route path={"/login"} element={<Login login={signin}/>}></Route>
       <Route path={"/forgotPassword"} element={<ForgotPassword/>}></Route>
       <Route path={"/signup"} element={<Signup/>}></Route>
-      <Route element={<ProtectedRoute isAuthenticated={authenticated}/>}>
+      <Route element={<ProtectedRoute/>}>
         <Route path={"/home"} element={<Layout signout={signout}/>}>
           <Route index element={<Main/>}></Route>
           <Route path={"editor"} element={<DocEditor/>}></Route>
@@ -66,6 +85,7 @@ function App() {
           <Route path={"documents/labels"} element={<DocView/>}></Route>
         </Route>
       </Route>
+      <Route path={"*"} element={<NotFound />}></Route>
     </Routes>
   )
 }
